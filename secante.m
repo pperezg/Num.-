@@ -1,24 +1,25 @@
-function [y,iter,err]=secante(fn,x0,x1,tol,n)
-syms x
-f=symfun(str2sym(fn),x);
+function [X, cond, count, error]=secante(f,x0,x1,tol,n)
+
 f0=f(x0);
 f1=f(x1);
-E=tol+1; 
-cont=0;
+error=tol+1; 
+count=0;
 
-while E>tol && cont<n
-  xa=x1-f1*(x1-x0)/(f1-f0);
-  fa=f(xa);
-  E=abs(xa-x1);
-  cont=cont+1; 
+while error>tol && count<n && f1~=0
+  X=x1-f1*(x1-x0)/(f1-f0);
+  error=abs(X-x1);
+  count=count+1; 
   x0=x1;
   f0=f1;
-  x1=xa;
-  f1=fa;
+  x1=X;
+  f1=f(X);
 end
-
-%Entrega de resultados
-y=eval(xa);
-iter=cont;
-err=E;
+if error <= tol
+    cond='Tolerancia superada';
+elseif f1==0
+    cond='Raiz encontrada';
+    error=0;
+else
+    cond='Iteraciones Máximas';
+end
 end
