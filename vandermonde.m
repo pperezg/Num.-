@@ -1,4 +1,4 @@
-function [X f] = vandermonde2(datos)
+function [X f] = vandermonde(datos)
 [m, n] = size(datos);
 b = datos(:,2);
 A = zeros(m);
