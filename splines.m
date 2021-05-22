@@ -1,4 +1,4 @@
-function [funciones dato_y] = splines(datos, dato_x)
+function [funciones cond dato_y] = splines(datos, dato_x)
 datos = sortrows(datos);
 [m, n] = size(datos);
 ys = datos(:,2);
@@ -21,11 +21,20 @@ for i=1:m-1
     end
 end
 
+minm = min(xs);
+maxm = max(xs);
+dato_y = 0;
+cond = '';
 
-for j=1:m-1
-    if  xs(j)<dato_x && dato_x<xs(j+1)
-       fn = funciones(j);
-       dato_y = subs(fn,dato_x);
+if dato_x<minm | dato_x>maxm
+    cond = 'No se pudo realizar la interpolación ya que el x buscado no se encuentra en el intervalo de los datos.';
+else
+    cond = 'Se realizó la interpolación con éxito';
+    for j=1:m-1
+        if  xs(j)<dato_x && dato_x<xs(j+1)
+           fn = funciones(j);
+           dato_y = subs(fn,dato_x);
+        end
     end
 end
     
