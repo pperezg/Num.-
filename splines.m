@@ -1,6 +1,6 @@
-function [funciones cond dato_y] = splines(datos, dato_x)
+function [funciones, cond, dato_y] = splines(datos, dato_x)
 datos = sortrows(datos);
-[m, n] = size(datos);
+[m, ~] = size(datos);
 ys = datos(:,2);
 xs = datos(:,1);
 funciones = [];
@@ -15,7 +15,7 @@ for i=1:m-1
     else
         dif_ant = diff(funciones(i-1),x);
         A = [xs(i)^2 xs(i) 1; xs(i+1)^2 xs(i+1) 1; 2*xs(i) 1 0];
-        b = [ys(i); ys(i+1); subs(dif_ant,i)];
+        b = [ys(i); ys(i+1); subs(dif_ant,xs(i))];
         X = A\b;
         funciones = [funciones; poly2sym(X.')];
     end

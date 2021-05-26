@@ -1,7 +1,9 @@
-function [X, cond, count] = gauss_seidel(A,b,x_0,n_max)
+function [X, cond, count, Tj, Cj,r] = gauss_seidel(A,b,x_0,n_max, tol)
 
 [m, n] = size(A);
-
+Tj=zeros(size(A));
+Cj=zeros(size(b));
+r=0;
 if m>n
     X = x_0;
     count = 0;
@@ -26,13 +28,20 @@ else
         Tj = inv(D-L)*(U);
         Cj = inv(D-L)*b;
         xn = x_0;
-        
-        while count<n_max
-            xn = Tj*xn + Cj;
+        Err=1000;
+        while count<n_max && Err>tol
+            xi = Tj*xn + Cj;
+            Err=norm(xn-xi);
+            xn=xi;
             count = count + 1;            
         end
-        cond = 'Se obtuvo una respuesta para el sistema de ecuaciones.';
+        if Err <= tol
+            cond = 'Se obtuvo una respuesta para el sistema de ecuaciones.';
+        else
+            cond = 'Iteraciones Máximas Alcanzadas';
+        end
         X = xn;
+        r=max(abs(eig(Tj)));
     end
 end
 end
