@@ -1,5 +1,4 @@
-
-function [X, cond, count] = LU_S(A,b,x_0,n_max)
+function [X, cond, count, L, U] = LU_S(A,b,x_0,n_max)
 [m, n] = size(A);
 
 if m>n
@@ -11,7 +10,7 @@ elseif m<n
     count = 0;
     cond='El sistema tiene infinitas soluciones';
 else
-    
+    cond='El sistema esta bien condicionado';
     count = 0;
     L=eye(n);
     U=zeros(n);
@@ -34,9 +33,6 @@ else
     end
     U(n,n)=M(n,n);
     l=zeros(n,1);
-    L
-    U
-    L*U
     J=[L b];
     for i=1:n
         b=J(i,n+1);
@@ -47,7 +43,7 @@ else
         l(i)=(b-c);
     end
     y=zeros(n,1);
-    Y=[U l]
+    Y=[U l];
     for i=n:-1:1
         a=Y(i,i);
         b=Y(i,n+1);

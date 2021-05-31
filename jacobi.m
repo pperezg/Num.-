@@ -37,8 +37,10 @@ else
         end
         if Err <= tol
             cond = 'Se obtuvo una respuesta para el sistema de ecuaciones.';
-        else
+        elseif  count>=n_max
             cond = 'Iteraciones Máximas Alcanzadas';
+        else
+            cond = 'El método diverge';
         end
         X = xn;
         r=max(abs(eig(Tj)));

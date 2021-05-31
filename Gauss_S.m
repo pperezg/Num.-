@@ -1,7 +1,7 @@
-function [X, cond, count] = Gauss_S(A,b,x_0,n_max)
+function [X, cond, count, op] = Gauss_S(A,b,x_0,n_max)
 
 [m, n] = size(A);
-
+op={''};
 if m>n
     X = x_0;
     count = 0;
@@ -18,14 +18,21 @@ else
             break
         end
         for j=i+1:n
+              count=count+1;
               if M(j,i)~=0
-                  M(j,i:n+1)=M(j,i:n+1)-(M(j,i)/M(i,i))*M(i,i:n+1);
-                  
+                  mul=(M(j,i)/M(i,i));
+                  M(j,i:n+1)=M(j,i:n+1)-mul*M(i,i:n+1);
+                  if sign(-1*mul) == 1
+                      op{count,1} = sprintf('F%g=F%g+%gF%g',j,j,-1*mul,i);
+                  else
+                       op{count,1} = sprintf('F%g=F%g%gF%g',j,j,-1*mul,i);
+                  end
               else
                   continue
               end
+              op{count,2} = M;
+              
         end
-    count=count+1;
     end
     x=zeros(n,1);
     for i=n:-1:1
@@ -41,6 +48,5 @@ else
     cond = 'Se obtuvo una respuesta para el sistema de ecuaciones.';
 end
 end
-
 
 

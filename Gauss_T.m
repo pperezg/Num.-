@@ -1,8 +1,7 @@
-
-function [X, cond, count] = Gauss_T(A,b,x_0,n_max) 
+function [X, cond, count, op] = Gauss_T(A,b,x_0,n_max) 
 
 [m, n] = size(A);
-
+op={''};
 if m>n
     X = x_0;
     count = 0;
@@ -12,7 +11,7 @@ elseif m<n
     count = 0;
     cond='El sistema tiene infinitas soluciones';
 else
-    count=0;
+    count=1;
     M=[A b];
     cambi=[];
     for i=1:n-1
@@ -21,22 +20,38 @@ else
         end
         [a,b]=find(abs(M(i:n,i:n))==max(max(abs(M(i:n,i:n)))));
         if b(1)+i-1~=i
+            count=count+1;
             cambi=[cambi; i b(1)+i-1];
             aux2=M(:,b(1)+i-1);
             M(:,b(1)+i-1)=M(:,i);
             M(:,i)=aux2;
+            op{count,1} = sprintf('C%g<->C%g',i,b(1)+i-1);
+            op{count,2} = M;
         end   
         if a(1)+i-1~=i
+            count=count+1;
             aux2=M(i+a(1)-1,i:n+1);
             M(a(1)+i-1,i:n+1)=M(i,i:n+1);
             M(i,i:n+1)=aux2;
+            op{count,1} = sprintf('F%g<->F%g',i,a(1)+i-1);
+            op{count,2} = M;
         end
         for j=i+1:n
-            if M(j,i)~=0
-                M(j,i:n+1)=M(j,i:n+1)-(M(j,i)/M(i,i))*M(i,i:n+1);
-            end
+            count=count+1;
+              if M(j,i)~=0
+                  mul=(M(j,i)/M(i,i));
+                  M(j,i:n+1)=M(j,i:n+1)-mul*M(i,i:n+1);
+                  if sign(-1*mul) == 1
+                      op{count,1} = sprintf('F%g=F%g+%gF%g',j,j,-1*mul,i);
+                  else
+                       op{count,1} = sprintf('F%g=F%g%gF%g',j,j,-1*mul,i);
+                  end
+              else
+                  continue
+              end
+              op{count,2} = M;
         end
-        count=count+1
+        
     end
     x=zeros(n,1);
     for i=n:-1:1
