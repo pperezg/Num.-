@@ -11,7 +11,7 @@ elseif m<n
     count = 0;
     cond='El sistema tiene infinitas soluciones';
 else
-    count=1;
+    count=0;
     M=[A b];
     cambi=[];
     for i=1:n-1
