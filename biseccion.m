@@ -5,7 +5,7 @@ if fn(x0)==0
     cond='Raiz encontrada';
     count = 0;
     error=0;
-elseif fn(x1)==1
+elseif fn(x1)==0
     X=x_1;
     cond='Raiz encontrada';
     count = 0;
